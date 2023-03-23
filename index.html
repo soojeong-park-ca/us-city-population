@@ -1,23 +1,66 @@
 <!DOCTYPE html>
 <html lang="en">
-<head>
-  <meta charset="UTF-8">
-  <title>Type Ahead 👀</title>
-  <link rel="stylesheet" href="style.css">
-  <link rel="icon" href="https://fav.farm/🔥" />
-</head>
-<body>
+  <head>
+    <meta charset="UTF-8" />
+    <title>US Population</title>
+    <link rel="stylesheet" href="style.css" />
+    <link rel="icon" href="https://fav.farm/🔥" />
+  </head>
+  <body>
+    <form class="search-form">
+      <input type="text" class="search" placeholder="City or State" autofocus />
+      <ul class="suggestions">
+        <li>Filter for a city</li>
+        <li>or a state</li>
+      </ul>
+    </form>
+    <script>
+      const input = document.querySelector(".search");
+      const suggestions = document.querySelector(".suggestions");
 
-  <form class="search-form">
-    <input type="text" class="search" placeholder="City or State">
-    <ul class="suggestions">
-      <li>Filter for a city</li>
-      <li>or a state</li>
-    </ul>
-  </form>
-<script>
-const endpoint = 'https://gist.githubusercontent.com/Miserlou/c5cd8364bf9b2420bb29/raw/2bf258763cdddd704f8ffd3ea9a3e81d25e2c6f6/cities.json';
+      async function handleChange(e) {
+        const searchQuery = this.value.trim();
+        console.log("searchQuery: ", searchQuery);
 
-</script>
-</body>
+        try {
+          const results = await fetchPopulation(searchQuery);
+          console.log(results);
+          const htmlContent = await results.map(result => {
+            return `<li>${result.city}, ${result.state} <span class="population">${result.population}</span> </li>`;
+          });
+          console.log(htmlContent);
+          suggestions.insertAdjacentHTML("beforeend", ...htmlContent);
+        } catch (err) {
+          console.log(err);
+        }
+      }
+
+      input.addEventListener("input", handleChange);
+
+      const endpoint =
+        "https://gist.githubusercontent.com/Miserlou/c5cd8364bf9b2420bb29/raw/2bf258763cdddd704f8ffd3ea9a3e81d25e2c6f6/cities.json";
+
+      async function fetchPopulation(searchTerm) {
+        const response = await fetch(endpoint);
+        if (!response.ok) {
+          throw Error(response.statusText);
+        }
+        const rawData = await response.json();
+
+        const data = rawData.map(item => ({
+          city: item.city,
+          state: item.state,
+          population: item.population,
+        }));
+
+        const neededData = await data.filter(item =>
+          item.city.includes(searchTerm)
+        );
+
+        return neededData;
+      }
+
+      // const cities = [];
+    </script>
+  </body>
 </html>
