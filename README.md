@@ -17,9 +17,7 @@ US City Population is a website that helps you search for population of US citie
 
 ### Screenshots
 
-<img src="./us-city-population-1.png" alt="US City Population website screenshot" width="300" />
-<img src="./us-city-population-2.png" alt="US City Population website screenshot"width="300" />
-<img src="./us-city-population-3.png" alt="US City Population website screenshot"width="300" />
+<img src="./us-city-population-1.png" alt="US City Population website screenshot" width="300" /> <img src="./us-city-population-2.png" alt="US City Population website screenshot" width="300" /> <img src="./us-city-population-3.png" alt="US City Population website screenshot" width="300" />
 
 ### Demo Link
 
