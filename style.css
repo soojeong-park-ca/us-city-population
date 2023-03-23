@@ -41,7 +41,6 @@ input.search {
   margin: 0;
   padding: 0;
   position: relative;
-  /*perspective: 20px;*/
 }
 
 .suggestions li {
@@ -69,6 +68,10 @@ input.search {
 
 span.population {
   font-size: 15px;
+}
+li.not-found {
+  color: rgb(191, 53, 53);
+  font-weight: bold;
 }
 
 .hl {

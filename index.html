@@ -15,52 +15,89 @@
       </ul>
     </form>
     <script>
-      const input = document.querySelector(".search");
+      // VARIABLES
+      const searchInput = document.querySelector(".search");
       const suggestions = document.querySelector(".suggestions");
-
-      async function handleChange(e) {
-        const searchQuery = this.value.trim();
-        console.log("searchQuery: ", searchQuery);
-
-        try {
-          const results = await fetchPopulation(searchQuery);
-          console.log(results);
-          const htmlContent = await results.map(result => {
-            return `<li>${result.city}, ${result.state} <span class="population">${result.population}</span> </li>`;
-          });
-          console.log(htmlContent);
-          suggestions.insertAdjacentHTML("beforeend", ...htmlContent);
-        } catch (err) {
-          console.log(err);
-        }
-      }
-
-      input.addEventListener("input", handleChange);
 
       const endpoint =
         "https://gist.githubusercontent.com/Miserlou/c5cd8364bf9b2420bb29/raw/2bf258763cdddd704f8ffd3ea9a3e81d25e2c6f6/cities.json";
+      const apiData = [];
 
-      async function fetchPopulation(searchTerm) {
-        const response = await fetch(endpoint);
-        if (!response.ok) {
-          throw Error(response.statusText);
+      // FUNCTIONS
+      // Fetch API data
+      async function fetchData(searchQuery) {
+        const res = await fetch(endpoint);
+        const data = await res.json();
+        if (!res.ok) {
+          throw Error(res.statusText);
         }
-        const rawData = await response.json();
 
-        const data = rawData.map(item => ({
+        const neededData = await data.map(item => ({
           city: item.city,
           state: item.state,
           population: item.population,
         }));
 
-        const neededData = await data.filter(item =>
-          item.city.includes(searchTerm)
-        );
+        apiData.push(...neededData);
+      }
+      fetchData();
 
-        return neededData;
+      // Find matching words
+      function findMatches(wordToMatch, apiData) {
+        const regex = new RegExp(wordToMatch, "gi");
+        return apiData.filter(
+          item => item.city.match(regex) || item.state.match(regex)
+        );
       }
 
-      // const cities = [];
+      // Add commas for number string
+      function numberWithCommas(numStr) {
+        return numStr.replace(/\B(?=(\d{3})+(?!\d))/g, ",");
+      }
+
+      // Display matching results
+      function displayMatches(e) {
+        let htmlContent = "<li>Filter for a city</li><li>or a state</li>";
+
+        if (e.target.value) {
+          const arrToDisplay = findMatches(e.target.value, apiData);
+
+          if (arrToDisplay.length > 0) {
+            htmlContent = arrToDisplay
+              .map(place => {
+                const regex = new RegExp(e.target.value, "gi");
+                const cityName = place.city.replace(
+                  regex,
+                  `<span class="hl">${e.target.value}</span>`
+                );
+                const stateName = place.state.replace(
+                  regex,
+                  `<span class="hl">${e.target.value}</span>`
+                );
+                return `
+            <li>
+              <span class="name">
+                ${cityName}, ${stateName}
+              </span>
+              <span class="population">${numberWithCommas(
+                place.population
+              )}</span>
+            </li>
+          `;
+              })
+              .join("");
+            suggestions.innerHTML = htmlContent;
+          } else {
+            htmlContent = `<li class="not-found">Match not found</li><li class="not-found">Try again</li>`;
+            suggestions.innerHTML = htmlContent;
+          }
+        } else {
+          suggestions.innerHTML = htmlContent;
+        }
+      }
+
+      searchInput.addEventListener("change", displayMatches);
+      searchInput.addEventListener("keyup", displayMatches);
     </script>
   </body>
 </html>
