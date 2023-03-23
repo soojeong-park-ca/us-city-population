@@ -19,6 +19,8 @@ US City Population is a website that helps you search for population of US citie
 
 <img src="./us-city-population-1.png" alt="US City Population website screenshot" width="500" /> <img src="./us-city-population-2.png" alt="US City Population website screenshot" width="500" /> <img src="./us-city-population-3.png" alt="US City Population website screenshot" width="500" />
 
+https://user-images.githubusercontent.com/126619528/227363568-2613f80b-036c-44ac-96c7-b9261df2973f.mov
+
 ### Demo Link
 
 **[💻 Live Site URL](https://soojeong-park-ca.github.io/us-city-population/)**
